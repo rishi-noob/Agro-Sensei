@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agro Sensei - AI-Powered Agriculture Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="frontend/assets/css/style.css">
+</head>
+<body>
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+    
+    <!-- API Key Modal -->
+    <div id="api-key-modal" class="api-key-modal">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-key text-blue-600 mr-2"></i>Setup API Key
+            </h2>
+            <p class="text-gray-600 mb-6">Enter your Gemini (or other) API key to enable AI-powered crop disease analysis.</p>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">API Provider</label>
+                <select id="api-provider" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                    <option value="openai">OpenAI GPT-4o (Vision)</option>
+                    <option value="gemini" selected>Google Gemini Vision</option>
+                    <option value="anthropic">Anthropic Claude Vision</option>
+                </select>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2">API Key</label>
+                <input type="password" id="api-key-input" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" 
+                       placeholder="Enter your API key">
+            </div>
+            
+            <div class="flex space-x-3">
+                <button id="save-api-key" 
+                        class="flex-1 bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-save mr-2"></i>Save
+                </button>
+                <button id="demo-mode-btn" 
+                        class="flex-1 bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-play mr-2"></i>Demo Mode
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sticky Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" onclick="showPage('home'); return false;" class="text-2xl font-bold text-gray-900 flex items-center">
+                <i class="fas fa-leaf mr-2" style="color: var(--primary-green);"></i>Agro Sensei<span style="color: var(--primary-green);">.</span>
+            </a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#" onclick="showPage('home'); return false;" class="nav-link text-gray-600 hover:text-green-700 font-medium">Features</a>
+                <a href="#sensei-brain" onclick="showPage('home'); setTimeout(function(){ var el = document.getElementById('sensei-brain'); if(el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); return false;" class="nav-link text-gray-600 hover:text-green-700 font-medium">Our AI</a>
+                <a href="#" onclick="showPage('marketplace'); return false;" class="nav-link text-gray-600 hover:text-green-700 font-medium">Marketplace</a>
+            </div>
+            <button class="md:hidden text-gray-600" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </nav>
+    </header>
+    
+    <!-- HOME PAGE -->
+    <div id="home-page" class="page active">
+        <!-- Hero Section: two columns -->
+        <section class="bg-white py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col lg:flex-row items-center gap-12">
+                    <div class="lg:w-1/2">
+                        <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4">Empowering the Farmers of Uttar Pradesh with AI</h1>
+                        <p class="text-lg text-gray-700 mb-6">Your trusted digital companion for higher yields, lower costs, and a prosperous future.</p>
+                        <div class="flex flex-wrap gap-4 mb-8">
+                            <span class="flex items-center text-gray-800 font-semibold uppercase text-sm"><span class="w-2 h-2 rounded-full mr-2" style="background: var(--primary-green);"></span>Accurate</span>
+                            <span class="flex items-center text-gray-800 font-semibold uppercase text-sm"><span class="w-2 h-2 rounded-full mr-2" style="background: var(--primary-green);"></span>Accessible</span>
+                            <span class="flex items-center text-gray-800 font-semibold uppercase text-sm"><span class="w-2 h-2 rounded-full mr-2" style="background: var(--primary-green);"></span>Actionable</span>
+                        </div>
+                        <div class="flex flex-wrap gap-4">
+                            <button onclick="showPage('crop-recommendation')" class="btn-primary text-white px-6 py-3 rounded-lg font-bold uppercase text-sm">Crop Recommendation</button>
+                            <button onclick="showPage('disease-detection')" class="bg-white border-2 px-6 py-3 rounded-lg font-bold uppercase text-sm text-gray-800 hover:border-green-600 hover:text-green-700 transition-colors" style="border-color: var(--primary-green);">Scan Crop</button>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2 flex justify-center">
+                        <div class="relative">
+                            <div class="w-72 h-72 md:w-96 md:h-96 rounded-full overflow-hidden shadow-2xl border-8 border-white" style="box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);">
+                                <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?q=80&w=600" alt="Plant" class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute -bottom-4 -right-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl">
+                                <img src="https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?q=80&w=300" alt="Leaves" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- OUR VISION -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-6 max-w-4xl text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">OUR VISION</h2>
+                <p class="text-gray-700 mb-6 leading-relaxed"><strong>AgroSensei</strong> is an AI-powered agriculture intelligence platform built to support farmers with reliable, data-driven insights for everyday farming decisions. The platform analyzes soil nutrients, climate parameters, and crop images to identify crop diseases at an early stage and recommend the most suitable crops for specific land and regional conditions. It uses machine learning with simple explanations and localized insights to reduce uncertainty in crop planning and disease management.</p>
+                <p class="text-gray-700 leading-relaxed">It also connects farmers to nearby agricultural stores for seeds, fertilizers, and medicines, making expert guidance and essential resources accessible in one place. Through this approach, AgroSensei aims to improve productivity, reduce crop loss, and promote more informed and sustainable farming practices.</p>
+            </div>
+        </section>
+        
+        <!-- The Farmer's Complete Toolkit -->
+        <section class="py-20" style="background-color: var(--light-cream);">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-900">The Farmer's Complete Toolkit</h2>
+                <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">From sowing to selling, Agro Sensei is with you at every step.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="feature-card bg-gray-50 rounded-xl p-6 shadow-sm border-2" style="border-color: var(--primary-green);">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Scan, Diagnose & Treat</h3>
+                        <p class="text-gray-600 text-sm">Instantly identify crop diseases with your phone's camera. Get accurate diagnoses and effective treatment plans in seconds.</p>
+                    </div>
+                    <div class="feature-card bg-gray-50 rounded-xl p-6 shadow-sm border-2" style="border-color: var(--primary-green);">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Smart Crop Recommendation</h3>
+                        <p class="text-gray-600 text-sm">Get AI-powered crop suggestions based on your soil and climate. We match your land with the best-suited crops.</p>
+                    </div>
+                    <div class="feature-card bg-gray-50 rounded-xl p-6 shadow-sm border-2" style="border-color: var(--primary-green);">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Farm Management & Planning</h3>
+                        <p class="text-gray-600 text-sm">Receive hyper-local weather forecasts, intelligent spraying advisories, and a personalized crop calendar for your farm.</p>
+                    </div>
+                    <div class="feature-card bg-gray-50 rounded-xl p-6 shadow-sm border-2" style="border-color: var(--primary-green);">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Agri-Input Marketplace</h3>
+                        <p class="text-gray-600 text-sm">Connect to nearby agricultural stores for seeds, fertilizers, and medicines. Expert guidance and essential resources in one place.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- The Sensei Brain: Smart Crop Recommendation -->
+        <section id="sensei-brain" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col lg:flex-row items-center gap-12">
+                    <div class="lg:w-1/2">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">The "Sensei" Brain: Smart Crop Recommendation</h2>
+                        <p class="text-gray-700 mb-8">Our AI doesn't randomly suggest crops. It evaluates your land and climate conditions step by step, just like an experienced agricultural advisor, to recommend crops that are best suited for your field.</p>
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">Soil Analysis</h3>
+                                <p class="text-gray-600 text-sm">We analyze soil nutrients like Nitrogen, Phosphorus, Potassium, and pH.</p>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">Climate Assessment</h3>
+                                <p class="text-gray-600 text-sm">We evaluate temperature, humidity, and rainfall conditions.</p>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">Suitability Matching</h3>
+                                <p class="text-gray-600 text-sm">We match your soil and climate data with historical crop performance.</p>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">Final Recommendation</h3>
+                                <p class="text-gray-600 text-sm">We suggest the most suitable crop for your land with a clear explanation.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2 grid grid-cols-2 gap-4">
+                        <div class="rounded-full overflow-hidden shadow-lg aspect-square"><img src="https://images.unsplash.com/photo-1637334725498-e5e1dd498e2e?q=80&w=400" alt="Sprout" class="w-full h-full object-cover"></div>
+                        <div class="rounded-full overflow-hidden shadow-lg aspect-square"><img src="https://images.unsplash.com/photo-1536304993881-460e32be1dbb?q=80&w=400" alt="Rice" class="w-full h-full object-cover"></div>
+                        <div class="rounded-full overflow-hidden shadow-lg aspect-square"><img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=400" alt="Field" class="w-full h-full object-cover"></div>
+                        <div class="rounded-full overflow-hidden shadow-lg aspect-square"><img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=400" alt="Wheat" class="w-full h-full object-cover"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- The Sensei Brain: Unmatched Accuracy (Disease Detection) -->
+        <section id="sensei-brain-disease" class="py-20" style="background-color: var(--light-cream);">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col lg:flex-row items-center gap-12">
+                    <div class="lg:w-1/2 grid grid-cols-2 gap-4 order-2 lg:order-1">
+                        <div class="rounded-full overflow-hidden shadow-lg aspect-square"><img src="https://images.unsplash.com/photo-1471193945509-9ad0617afabf?q=80&w=400" alt="Leaf analysis" class="w-full h-full object-cover"></div>
+                        <div class="rounded-full overflow-hidden shadow-lg aspect-square"><img src="https://images.unsplash.com/photo-1592982537447-6f2a6a0c7c18?q=80&w=400" alt="Crop health" class="w-full h-full object-cover"></div>
+                    </div>
+                    <div class="lg:w-1/2 order-1 lg:order-2">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">The "Sensei" Brain: Unmatched Accuracy</h2>
+                        <p class="text-gray-700 mb-8">Our AI doesn't just guess. It uses a multi-stage computer vision engine to analyze your crop images like a real agronomist, delivering diagnoses you can trust.</p>
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">Crop Identification</h3>
+                                <p class="text-gray-600 text-sm">First, we identify the plant (e.g. "This is Rice").</p>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">Anomaly Localization</h3>
+                                <p class="text-gray-600 text-sm">Then, we find the exact problem area on the leaf or stem.</p>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">Precise Classification</h3>
+                                <p class="text-gray-600 text-sm">We diagnose the specific disease, like "Rice Blast".</p>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 mb-1">Severity Estimation</h3>
+                                <p class="text-gray-600 text-sm">Finally, we tell you how serious the infection is.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Statistics Section -->
+        <!-- <section class="py-20" style="background-color: var(--light-cream);">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="stat-card p-6 rounded-lg">
+                        <div class="text-4xl font-bold mb-2" style="color: var(--primary-green);">10K+</div>
+                        <div class="text-gray-600 font-medium">Active Farmers</div>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg">
+                        <div class="text-4xl font-bold mb-2" style="color: var(--primary-green);">99.3%</div>
+                        <div class="text-gray-600 font-medium">AI Accuracy</div>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg">
+                        <div class="text-4xl font-bold mb-2" style="color: var(--primary-green);">22+</div>
+                        <div class="text-gray-600 font-medium">Crop Types</div>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg">
+                        <div class="text-4xl font-bold mb-2" style="color: var(--primary-green);">24/7</div>
+                        <div class="text-gray-600 font-medium">AI Support</div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+    </div>
+    
+    <!-- CROP RECOMMENDATION PAGE -->
+    <div id="crop-recommendation-page" class="page">
+        <div class="container mx-auto px-6 py-12">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-4xl font-bold mb-4 text-center" style="color: var(--primary-green);">
+                    <i class="fas fa-seedling mr-3"></i>Crop Recommendation
+                </h1>
+                <p class="text-gray-600 text-center mb-8">Enter your soil and climate parameters to get AI-powered crop recommendations</p>
+                
+                <!-- Input Form -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                    <form id="crop-form" onsubmit="submitCropForm(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2">Nitrogen (N) - kg/ha</label>
+                                <input type="number" id="N" min="0" max="140" step="1" required
+                                       class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                                       placeholder="0-140">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2">Phosphorus (P) - kg/ha</label>
+                                <input type="number" id="P" min="5" max="145" step="1" required
+                                       class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                                       placeholder="5-145">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2">Potassium (K) - kg/ha</label>
+                                <input type="number" id="K" min="5" max="205" step="1" required
+                                       class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                                       placeholder="5-205">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2">Temperature (°C)</label>
+                                <input type="number" id="temperature" min="8" max="44" step="0.1" required
+                                       class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                                       placeholder="8-44">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2">Humidity (%)</label>
+                                <input type="number" id="humidity" min="14" max="100" step="0.1" required
+                                       class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                                       placeholder="14-100">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2">Soil pH</label>
+                                <input type="number" id="ph" min="3.5" max="10" step="0.1" required
+                                       class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                                       placeholder="3.5-10">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-gray-700 font-bold mb-2">Rainfall (mm)</label>
+                                <input type="number" id="rainfall" min="20" max="300" step="0.1" required
+                                       class="input-field w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                                       placeholder="20-300">
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-center space-x-4">
+                            <button type="submit" id="submit-crop-btn" class="btn-primary text-white px-8 py-3 rounded-lg font-bold">
+                                <i class="fas fa-search mr-2"></i>Get Recommendation
+                            </button>
+                            <button type="button" onclick="resetCropForm()" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-bold hover:bg-gray-300">
+                                <i class="fas fa-redo mr-2"></i>Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Results Section -->
+                <div id="crop-results" class="hidden">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- DISEASE DETECTION PAGE -->
+    <div id="disease-detection-page" class="page">
+        <div class="container mx-auto px-6 py-12">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-4xl font-bold mb-4 text-center" style="color: var(--primary-green);">
+                    <i class="fas fa-microscope mr-3"></i>AI Crop Disease Diagnosis
+                </h1>
+                <p class="text-gray-600 text-center mb-8">Upload a photo of your crop for comprehensive AI analysis</p>
+                
+                <!-- API Key setup (Gemini) -->
+                <div class="flex flex-col items-center mb-6">
+                    <button type="button" onclick="showApiKeyModal()" class="inline-flex items-center px-4 py-2 rounded-lg border-2 font-medium text-gray-700 hover:border-green-600 hover:text-green-700 transition-colors" style="border-color: var(--primary-green);">
+                        <i class="fas fa-key mr-2" style="color: var(--primary-green);"></i>Configure API Key (Gemini)
+                    </button>
+                    <p class="text-sm text-gray-500 mt-2 max-w-md text-center">For API analysis, start the backend server first: run <code class="bg-gray-100 px-1 rounded">python app.py</code> in the <code class="bg-gray-100 px-1 rounded">backend</code> folder.</p>
+                </div>
+                
+                <!-- Upload Section -->
+                <div id="disease-upload-section" class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                    <div class="flex flex-col md:flex-row justify-center items-center gap-8 mb-8">
+                        <input type="file" id="disease-image-input" class="hidden" accept="image/*">
+                        <button onclick="document.getElementById('disease-image-input').click()" 
+                                class="w-full md:w-72 bg-white p-8 rounded-2xl shadow-lg border-2 border-gray-200 text-center hover:border-green-300 transition-all">
+                            <div class="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-camera text-3xl text-green-600"></i>
+                            </div>
+                            <span class="text-xl font-semibold text-gray-700 block mb-2">Upload Image</span>
+                            <p class="text-sm text-gray-500">From gallery or camera</p>
+                        </button>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="runDemoAnalysis()" class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                            <i class="fas fa-flask mr-2"></i>Try Demo Analysis
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Loading Section -->
+                <div id="disease-loading" class="hidden text-center py-12">
+                    <div class="loading-spinner mx-auto mb-4"></div>
+                    <p class="text-gray-600">Analyzing image with AI...</p>
+                </div>
+                
+                <!-- Results Section -->
+                <div id="disease-results" class="hidden">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MARKETPLACE PAGE: location-based nearby shops -->
+    <div id="marketplace-page" class="page">
+        <div class="container mx-auto px-6 py-12">
+            <h1 class="text-4xl font-bold mb-4 text-center" style="color: var(--primary-green);">
+                <i class="fas fa-shopping-cart mr-3"></i>AgriMarketplace
+            </h1>
+            
+            <!-- Location prompt (shown until location is acquired) -->
+            <div id="marketplace-location-prompt" class="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-8 text-center">
+                <div class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center" style="background-color: var(--primary-green); color: white;">
+                    <i class="fas fa-map-marker-alt text-3xl"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Share your location</h2>
+                <p class="text-gray-600 mb-6">We need your location to show nearby agriculture shops for seeds, fertilizers, and medicines.</p>
+                <button id="marketplace-allow-location" class="btn-primary text-white px-8 py-3 rounded-lg font-bold">
+                    <i class="fas fa-location-crosshairs mr-2"></i>Allow location
+                </button>
+                <p id="marketplace-location-error" class="mt-4 text-red-600 text-sm hidden"></p>
+            </div>
+            
+            <!-- Nearby shops (shown after location acquired) -->
+            <div id="marketplace-shops-section" class="hidden">
+                <div class="flex justify-center flex-wrap gap-4 mb-8">
+                    <button onclick="filterShops('all', event)" class="category-btn bg-green-600 text-white px-6 py-2 rounded-full font-medium">All</button>
+                    <button onclick="filterShops('seeds', event)" class="category-btn bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-300">Seeds</button>
+                    <button onclick="filterShops('fertilizers', event)" class="category-btn bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-300">Fertilizers</button>
+                    <button onclick="filterShops('equipment', event)" class="category-btn bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-300">Equipment</button>
+                    <button onclick="filterShops('general', event)" class="category-btn bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-300">General</button>
+                </div>
+                <p id="marketplace-current-location" class="text-center font-semibold mb-2 hidden" style="color: var(--primary-green);"></p>
+                <p id="marketplace-location-status" class="text-center text-gray-600 mb-6"></p>
+                <div id="marketplace-shops-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-3">Agro Sensei</h3>
+                    <p class="text-gray-400 text-sm">Democratizing agricultural intelligence for the Indian farmer.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-3">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" onclick="showPage('home'); return false;" class="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#sensei-brain" onclick="showPage('home'); setTimeout(function(){ var el = document.getElementById('sensei-brain'); if(el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); return false;" class="text-gray-400 hover:text-white transition-colors">Our AI</a></li>
+                        <li><a href="#" onclick="showPage('marketplace'); return false;" class="text-gray-400 hover:text-white transition-colors">Marketplace</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-3">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-3">Follow Us</h3>
+                    <div class="footer-social flex gap-4">
+                        <a href="#" aria-label="Facebook" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+                        <a href="#" aria-label="Twitter" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+                        <a href="#" aria-label="Instagram" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" aria-label="YouTube" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-youtube text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="frontend/assets/js/app.js"></script>
+
+</body>
+</html>
+
